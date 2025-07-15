@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+/* Preline UI */
+@source "preline/dist/*.js";
+@import "preline/variants.css";
+
+/* Plugins */
+@plugin "@tailwindcss/forms";
+
+@theme {
+  --font-inter: "Inter", sans-serif;
+}
+
+/* Animasi teks berjalan */
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.marquee {
+  animation: marquee 15s linear infinite;
+  white-space: nowrap;
+}
+
+.marquee-container {
+  overflow: hidden;
+  position: relative;
+}

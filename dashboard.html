@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registrasi Periksa Hari Ini - RSUD</title>
+    <link rel="stylesheet" href="/src/css/variants.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-50 font-inter">
+    <!-- Header -->
+    <header class="bg-green-600 text-white p-4">
+      <div class="container mx-auto">
+        <h1 class="text-xl font-bold">Sistem Registrasi Rumah Sakit</h1>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container mx-auto p-6">
+      <!-- Top Section -->
+      <div class="bg-green-100 p-6 rounded-lg mb-6">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-semibold text-gray-800">
+            Registrasi Periksa Hari Ini
+          </h2>
+          <div class="text-sm text-gray-600">
+            Sisa Antrian:
+            <span id="sisa-antrian" class="font-bold text-green-600">13</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Left Panel - Registration Form -->
+          <div class="lg:col-span-1 space-y-4">
+            <!-- Registration Number -->
+            <div class="bg-white p-4 rounded-lg shadow">
+              <label class="block text-green-600 font-bold mb-2"
+                >No. Regis:
+                <span class="text-green-600 font-bold" id="current-reg-number"
+                  >001</span
+                ></label
+              >
+              <hr class="border-gray-300 mb-2" />
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                  >Poliklinik</label
+                >
+                <select
+                  id="poliklinik"
+                  class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500 mb-2"
+                >
+                  <option value="">Pilih poliklinik di sini</option>
+                  <option value="Poliklinik Bedah Ortopedi">
+                    Poliklinik Bedah Ortopedi
+                  </option>
+                  <option value="Poliklinik Penyakit Dalam">
+                    Poliklinik Penyakit Dalam
+                  </option>
+                  <option value="Poliklinik Anak">Poliklinik Anak</option>
+                  <option value="Poliklinik Kandungan">
+                    Poliklinik Kandungan
+                  </option>
+                  <option value="Poliklinik THT">Poliklinik THT</option>
+                  <option value="Poliklinik Gigi">Poliklinik Gigi</option>
+                  <option value="Poliklinik Mata">Poliklinik Mata</option>
+                  <option value="Poliklinik Kulit dan Kelamin">
+                    Poliklinik Kulit dan Kelamin
+                  </option>
+                  <option value="Poliklinik Psikiatri">
+                    Poliklinik Psikiatri
+                  </option>
+                  <option value="Poliklinik Rehabilitasi Medik">
+                    Poliklinik Rehabilitasi Medik
+                  </option>
+                  <option value="Poliklinik Gizi">Poliklinik Gizi</option>
+                </select>
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                  >Dokter yang bertugas</label
+                >
+                <select
+                  id="dokter"
+                  class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                >
+                  <option value="">Pilih dokter yang bertugas di sini</option>
+                  <option value="dr. andre">dr. andre</option>
+                  <option value="dr. budi">dr. budi</option>
+                  <option value="dr. citra">dr. citra</option>
+                  <option value="dr. diana">dr. diana</option>
+                  <option value="dr. erik">dr. erik</option>
+                  <option value="dr. fajar">dr. fajar</option>
+                  <option value="dr. gina">dr. gina</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Middle Panel - Patient Form -->
+          <div class="lg:col-span-1">
+            <div class="bg-white p-4 rounded-lg shadow">
+              <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-800">Pasien</h3>
+                <button
+                  id="daftar-btn"
+                  class="bg-red-600 text-white px-4 py-1 rounded-md hover:bg-red-700 transition-colors"
+                >
+                  Daftar +
+                </button>
+              </div>
+
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1"
+                    >No. RM</label
+                  >
+                  <input
+                    type="text"
+                    id="no-rm"
+                    class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    placeholder="Masukkan nomor RM"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Panel - Current Queue -->
+          <div class="lg:col-span-1">
+            <div class="bg-red-50 p-8 rounded-lg shadow text-center">
+              <div
+                class="text-8xl font-black text-red-600 mb-4"
+                id="current-number"
+              >
+                001
+              </div>
+            </div>
+            <div class="p-2">
+              <div class="space-y-2">
+                <div class="flex justify-center items-center space-x-2"></div>
+                <div class="flex justify-center space-x-2">
+                  <select
+                    id="loket-selector"
+                    class="text-sm border border-gray-300 rounded px-2 py-1"
+                  >
+                    <option value="1">Loket 1</option>
+                    <option value="2">Loket 2</option>
+                    <option value="3">Loket 3</option>
+                    <option value="4">Loket 4</option>
+                    <option value="5">Loket 5</option>
+                  </select>
+                  <div class="flex items-center space-x-2">
+                    <button
+                      id="panggil-btn"
+                      class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors flex items-center space-x-2"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="w-6 h-6"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z"
+                        />
+                      </svg>
+                      <span>Panggil</span>
+                    </button>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <button
+                      id="berikutnya-btn"
+                      class="bg-orange-600 text-white px-4 py-2 rounded-md hover:bg-orange-700 transition-colors flex items-center space-x-2"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="size-6"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M3 8.689c0-.864.933-1.406 1.683-.977l7.108 4.061a1.125 1.125 0 0 1 0 1.954l-7.108 4.061A1.125 1.125 0 0 1 3 16.811V8.69ZM12.75 8.689c0-.864.933-1.406 1.683-.977l7.108 4.061a1.125 1.125 0 0 1 0 1.954l-7.108 4.061a1.125 1.125 0 0 1-1.683-.977V8.69Z"
+                        />
+                      </svg>
+                      <span>Berikutnya</span>
+                    </button>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <button
+                      id="reset-btn"
+                      class="bg-orange-600 text-white px-4 py-2 rounded-md hover:bg-orange-700 transition-colors flex items-center space-x-2"
+                    >
+                      <span>Reset</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Registration Table -->
+      <div class="bg-white rounded-lg shadow">
+        <div class="p-4 border-b border-gray-200">
+          <h3 class="text-lg font-semibold text-gray-800">Registrasi</h3>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      class HospitalRegistrationSystem {
+        constructor() {
+          this.currentNumber =
+            parseInt(localStorage.getItem("currentNumber")) || 1;
+          this.registrationCount =
+            parseInt(localStorage.getItem("registrationCount")) || 1;
+          this.registrationData =
+            JSON.parse(localStorage.getItem("registrationData")) || [];
+          this.loketData = JSON.parse(localStorage.getItem("loketData")) || {
+            loket1: 0,
+            loket2: 0,
+            loket3: 0,
+            loket4: 0,
+          };
+          this.speechSynthesis = window.speechSynthesis;
+          this.init();
+        }
+
+        init() {
+          this.setupEventListeners();
+          this.updateCurrentNumber();
+          this.updateRegistrationNumber();
+          this.checkSpeechSupport();
+          this.syncWithLocalStorage();
+        }
+
+        syncWithLocalStorage() {
+          localStorage.setItem("currentNumber", this.currentNumber);
+          localStorage.setItem("registrationCount", this.registrationCount);
+          localStorage.setItem(
+            "registrationData",
+            JSON.stringify(this.registrationData)
+          );
+          localStorage.setItem("loketData", JSON.stringify(this.loketData));
+
+          // Dispatch event untuk display-antrian.html
+          window.dispatchEvent(new Event("queueUpdated"));
+        }
+
+        checkSpeechSupport() {
+          if (!this.speechSynthesis) {
+            alert("Browser Anda tidak mendukung fitur Text-to-Speech");
+            document.getElementById("panggil-btn").disabled = true;
+          }
+        }
+
+        setupEventListeners() {
+          // Daftar button
+          document
+            .getElementById("daftar-btn")
+            .addEventListener("click", () => {
+              this.addNewRegistration();
+            });
+
+          // Panggil button
+          document
+            .getElementById("panggil-btn")
+            .addEventListener("click", () => {
+              this.callCurrentNumber();
+            });
+
+          // Berikutnya button
+          document
+            .getElementById("berikutnya-btn")
+            .addEventListener("click", () => {
+              this.nextNumber();
+            });
+          // Reset button
+          document.getElementById("reset-btn").addEventListener("click", () => {
+            this.currentNumber = 1;
+            this.updateCurrentNumber();
+            this.updateSisaAntrian();
+            this.syncWithLocalStorage();
+          });
+        }
+
+        // Fungsi untuk mengubah nomor menjadi suara Indonesia
+        numberToIndonesianWords(number) {
+          const ones = [
+            "",
+            "satu",
+            "dua",
+            "tiga",
+            "empat",
+            "lima",
+            "enam",
+            "tujuh",
+            "delapan",
+            "sembilan",
+          ];
+          const tens = [
+            "",
+            "",
+            "dua puluh",
+            "tiga puluh",
+            "empat puluh",
+            "lima puluh",
+            "enam puluh",
+            "tujuh puluh",
+            "delapan puluh",
+            "sembilan puluh",
+          ];
+          const teens = [
+            "sepuluh",
+            "sebelas",
+            "dua belas",
+            "tiga belas",
+            "empat belas",
+            "lima belas",
+            "enam belas",
+            "tujuh belas",
+            "delapan belas",
+            "sembilan belas",
+          ];
+
+          if (number === 0) return "nol";
+          if (number < 10) return ones[number];
+          if (number >= 10 && number < 20) return teens[number - 10];
+          if (number >= 20 && number < 100) {
+            const ten = Math.floor(number / 10);
+            const one = number % 10;
+            return tens[ten] + (one !== 0 ? " " + ones[one] : "");
+          }
+          if (number >= 100 && number < 1000) {
+            const hundred = Math.floor(number / 100);
+            const remainder = number % 100;
+            let result = hundred === 1 ? "seratus" : ones[hundred] + " ratus";
+            if (remainder !== 0) {
+              result += " " + this.numberToIndonesianWords(remainder);
+            }
+            return result;
+          }
+
+          return number.toString();
+        }
+
+        // Fungsi untuk memutar suara
+        speakText(text) {
+          this.speechSynthesis.cancel();
+
+          const utterance = new SpeechSynthesisUtterance(text);
+
+          utterance.lang = "id-ID";
+          utterance.rate = 0.9;
+          utterance.pitch = 1;
+          utterance.volume = 1;
+
+          const voices = this.speechSynthesis.getVoices();
+          const indonesianVoice = voices.find((voice) =>
+            voice.lang.includes("id")
+          );
+          if (indonesianVoice) {
+            utterance.voice = indonesianVoice;
+          }
+
+          utterance.onstart = () => {
+            console.log("Speech started");
+          };
+
+          utterance.onend = () => {
+            console.log("Speech ended");
+          };
+
+          utterance.onerror = (event) => {
+            console.error("Speech error:", event.error);
+          };
+
+          this.speechSynthesis.speak(utterance);
+        }
+
+        callCurrentNumber() {
+          const currentNumberFormatted = String(this.currentNumber).padStart(
+            3,
+            "0"
+          );
+          const loket = document.getElementById("loket-selector").value;
+
+          // Update loket data
+          this.loketData[`loket${loket}`] = this.currentNumber;
+
+          const numberInWords = this.numberToIndonesianWords(
+            this.currentNumber
+          );
+          const speechText = `Nomor antrian ${numberInWords}, silakan menuju loket ${loket}`;
+
+          this.speakText(speechText);
+          this.syncWithLocalStorage();
+        }
+
+        nextNumber() {
+          this.currentNumber++;
+          this.updateCurrentNumber();
+          this.updateSisaAntrian();
+          this.syncWithLocalStorage();
+        }
+
+        updateCurrentNumber() {
+          document.getElementById("current-number").textContent = String(
+            this.currentNumber
+          ).padStart(3, "0");
+        }
+
+        updateSisaAntrian() {
+          const sisa = Math.max(
+            0,
+            this.registrationData.length - this.currentNumber + 1
+          );
+          document.getElementById("sisa-antrian").textContent = sisa;
+        }
+      }
+
+      let hospitalSystem;
+      document.addEventListener("DOMContentLoaded", () => {
+        hospitalSystem = new HospitalRegistrationSystem();
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RSUD Slawi - Nomor Antrian</title>
+    <link rel="stylesheet" href="/src/css/variants.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-gradient-to-b from-white to-yellow-100 min-h-screen font-inter">
+    <!-- Header -->
+    <header class="bg-green-600 text-white p-5 shadow-lg">
+      <div class="container mx-auto flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-8 h-8 text-white"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z"
+            />
+          </svg>
+          <h1 class="text-2xl font-bold">RSUD SLAWI</h1>
+        </div>
+        <div class="text-right">
+          <div class="flex items-center space-x-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              class="size-5"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 6a.75.75 0 0 0-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 0 0 0-1.5h-3.75V6Z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            <span id="current-time" class="text-lg font-semibold"
+              >10:09:12</span
+            >
+          </div>
+          <div id="current-date" class="text-sm opacity-90">
+            Kamis, 10 Juli 2025
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-10">
+      <!-- Queue Display Card -->
+      <div class="max-w-4xl mx-auto mb-7">
+        <div
+          class="bg-white rounded-lg shadow-2xl overflow-hidden border border-gray-200"
+        >
+          <div class="p-9 text-center">
+            <h2 class="text-sm font-bold text-gray-600 mb-2">
+              RUMAH SAKIT UMUM DAERAH SLAWI
+            </h2>
+            <h1 class="text-4xl font-bold text-gray-800 mb-8 pb-5">
+              NOMOR ANTRIAN
+            </h1>
+
+            <!-- Queue Number Display -->
+            <div class="mb-6">
+              <div
+                id="queue-number"
+                class="text-9xl font-black text-gray-800 mb-4"
+              >
+                001
+              </div>
+              <div id="queue-time" class="text-gray-600 text-lg pt-8">
+                10/07/2025 10:09:12
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Print Button -->
+      <div class="max-w-4xl mx-auto">
+        <button
+          id="print-ticket"
+          class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-5 px- rounded-xl text-2xl transition-colors duration-300 shadow-lg hover:shadow-xl"
+        >
+          CETAK ANTRIAN
+        </button>
+      </div>
+    </main>
+
+    <!-- Success Modal -->
+    <div
+      id="success-modal"
+      class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+      <div class="bg-white rounded-xl p-9 max-w-md mx-3 text-center shadow-2xl">
+        <div class="mb-4">
+          <div
+            class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-7 text-green-600"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+              />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-800 mb-2">Sukses</h3>
+          <p class="text-gray-600">Nomor antrian anda sedang dicetak</p>
+        </div>
+        <button
+          id="modal-ok"
+          class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-5 rounded-lg transition-colors duration-300"
+        >
+          Oke
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // Queue Management System
+      class QueueSystem {
+        constructor() {
+          this.currentQueue = 1;
+          this.init();
+        }
+
+        init() {
+          this.updateDisplay();
+          this.updateTime();
+          this.bindEvents();
+
+          // Update time every second
+          setInterval(() => this.updateTime(), 1000);
+        }
+
+        updateDisplay() {
+          document.getElementById("queue-number").textContent = String(
+            this.currentQueue
+          ).padStart(3, "0");
+          setInterval(() => {
+            document.getElementById("queue-time").textContent =
+              this.getCurrentDateTime();
+          }, 1000);
+        }
+
+        updateTime() {
+          const now = new Date();
+          const timeString = now.toLocaleTimeString("id-ID", {
+            hour12: false,
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+          });
+          const dateString = now.toLocaleDateString("id-ID", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+
+          document.getElementById("current-time").textContent = timeString;
+          document.getElementById("current-date").textContent = dateString;
+        }
+
+        getCurrentDateTime() {
+          const now = new Date();
+          const date = now
+            .toLocaleDateString("id-ID")
+            .split("/")
+            .reverse()
+            .join("/");
+          const time = now.toLocaleTimeString("id-ID", { hour12: false });
+          return `${date} ${time}`;
+        }
+
+        printTicket() {
+          this.currentQueue++;
+          this.updateDisplay();
+          this.showSuccessModal();
+        }
+
+        showSuccessModal() {
+          document.getElementById("success-modal").classList.remove("hidden");
+        }
+
+        hideSuccessModal() {
+          document.getElementById("success-modal").classList.add("hidden");
+        }
+
+        bindEvents() {
+          document
+            .getElementById("print-ticket")
+            .addEventListener("click", () => this.printTicket());
+          document
+            .getElementById("modal-ok")
+            .addEventListener("click", () => this.hideSuccessModal());
+
+          // Close modal when clicking outside
+          document
+            .getElementById("success-modal")
+            .addEventListener("click", (e) => {
+              if (e.target === document.getElementById("success-modal")) {
+                this.hideSuccessModal();
+              }
+            });
+        }
+      }
+
+      // Initialize the queue system
+      document.addEventListener("DOMContentLoaded", () => {
+        new QueueSystem();
+      });
+    </script>
+  </body>
+</html>
