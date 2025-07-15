@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSUD Slawi - Informasi Antrian</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Animasi teks berjalan */
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        
+        .marquee {
+            animation: marquee 15s linear infinite;
+            white-space: nowrap;
+        }
+        
+        .marquee-container {
+            overflow: hidden;
+            position: relative;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Header -->
+    <header class="bg-green-600 text-white p-5 shadow-lg">
+      <div class="container mx-auto flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-8 h-8 text-white"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z"
+            />
+          </svg>
+          <h1 class="text-2xl font-bold">RSUD SLAWI</h1>
+        </div>
+        <div class="text-right">
+          <div class="flex items-center space-x-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              class="size-5"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 6a.75.75 0 0 0-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 0 0 0-1.5h-3.75V6Z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            <span id="current-time" class="text-lg font-semibold"
+              >10:09:12</span
+            >
+          </div>
+          <div id="current-date" class="text-sm opacity-90">
+            Kamis, 10 Juli 2025
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto p-4">
+        <!-- Top Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+            <!-- Queue Info Card -->
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="bg-red-600 text-white p-4">
+                    <h2 class="text-xl font-bold text-center">INFORMASI ANTRIAN PASIEN</h2>
+                </div>
+                <div class="p-8 text-center">
+                    <div id="current-queue" class="text-8xl font-black text-gray-800 mb-6">001</div>
+                    <h3 class="text-2xl font-bold text-gray-800">
+                        MENUJU LOKET <span id="next-loket" class="text-red-600">1</span>
+                    </h3>
+                </div>
+            </div>
+
+            <!-- Hospital Image -->
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <img src="foto-display.jpg" 
+                     alt="Medical Team" 
+                     class="h-full w-full object-cover">
+            </div>
+        </div>
+
+        <!-- Counter Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="bg-red-600 text-white p-3 text-center">
+                    <h3 class="font-bold">Loket 1</h3>
+                </div>
+                <div class="p-6 text-center">
+                    <div id="loket1" class="text-4xl font-black text-gray-800">22</div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="bg-red-600 text-white p-3 text-center">
+                    <h3 class="font-bold">Loket 2</h3>
+                </div>
+                <div class="p-6 text-center">
+                    <div id="loket2" class="text-4xl font-black text-gray-800">18</div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="bg-red-600 text-white p-3 text-center">
+                    <h3 class="font-bold">Loket 3</h3>
+                </div>
+                <div class="p-6 text-center">
+                    <div id="loket3" class="text-4xl font-black text-gray-800">17</div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="bg-red-600 text-white p-3 text-center">
+                    <h3 class="font-bold">Loket 4</h3>
+                </div>
+                <div class="p-6 text-center">
+                    <div id="loket4" class="text-4xl font-black text-gray-800">16</div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="bg-red-600 text-white p-3 text-center">
+                    <h3 class="font-bold">Loket 5</h3>
+                </div>
+                <div class="p-6 text-center">
+                    <div id="loket5" class="text-4xl font-black text-gray-800">16</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Message dengan Animasi -->
+        <div class="bg-green-200 rounded-lg overflow-hidden marquee-container">
+            <div class="py-4">
+                <p class="text-gray-800 font-medium text-lg marquee">
+                Selamat datang di RSUD Slawi - Kami siap melayani Anda dengan sepenuh hati - Mohon tunggu panggilan antrian Anda - Terima kasih atas kesabaran Anda
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Queue Information System
+        class QueueInfoSystem {
+            constructor() {
+                this.currentQueue = parseInt(localStorage.getItem('currentNumber')) || 1;
+                this.loketQueues = JSON.parse(localStorage.getItem('loketData')) || {
+                    loket1: 0,
+                    loket2: 0,
+                    loket3: 0,
+                    loket4: 0,
+                    loket5: 0
+                };
+                this.init();
+            }
+
+            init() {
+                this.updateDisplay();
+                this.updateTime();
+                this.setupEventListeners();
+                
+                // Update time every second
+                setInterval(() => this.updateTime(), 1000);
+            }
+
+            setupEventListeners() {
+                // Listen for queue updates from dashboard
+                window.addEventListener('storage', (e) => {
+                    if (e.key === 'currentNumber' || e.key === 'loketData') {
+                        this.currentQueue = parseInt(localStorage.getItem('currentNumber')) || 1;
+                        this.loketQueues = JSON.parse(localStorage.getItem('loketData')) || this.loketQueues;
+                        this.updateDisplay();
+                    }
+                });
+
+                // Optional: Check for updates every 5 seconds as backup
+                setInterval(() => {
+                    this.checkForUpdates();
+                }, 5000);
+            }
+
+            checkForUpdates() {
+                const storedQueue = parseInt(localStorage.getItem('currentNumber'));
+                const storedLoketData = JSON.parse(localStorage.getItem('loketData'));
+                
+                if (storedQueue && storedQueue !== this.currentQueue) {
+                    this.currentQueue = storedQueue;
+                    this.updateDisplay();
+                }
+                
+                if (storedLoketData) {
+                    this.loketQueues = storedLoketData;
+                    this.updateDisplay();
+                }
+            }
+
+            updateDisplay() {
+                document.getElementById('current-queue').textContent = 
+                    String(this.currentQueue).padStart(3, '0');
+                
+                // Cari loket tujuan (nomor antrian terbesar yang sama dengan currentQueue)
+                let tujuanLoket = ' ';
+                Object.entries(this.loketQueues).forEach(([loket, nomor]) => {
+                    if (parseInt(nomor) === this.currentQueue) {
+                        tujuanLoket = loket.replace('loket', '');
+                    }
+                });
+                document.getElementById('next-loket').textContent = tujuanLoket;
+                
+                // Update loket displays
+                Object.keys(this.loketQueues).forEach(loket => {
+                    const element = document.getElementById(loket);
+                    if (element && this.loketQueues[loket]) {
+                        element.textContent = String(this.loketQueues[loket]).padStart(3, '0');
+                    }
+                });
+            }
+
+            updateTime() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('id-ID', { 
+                    hour12: false,
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+                const dateString = now.toLocaleDateString('id-ID', { 
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                document.getElementById('current-time').textContent = timeString;
+                document.getElementById('current-date').textContent = dateString;
+            }
+        }
+
+        // Initialize the system
+        document.addEventListener('DOMContentLoaded', () => {
+            new QueueInfoSystem();
+        });
+    </script>
+</body>
+</html>
