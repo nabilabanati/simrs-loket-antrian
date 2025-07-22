@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMRS - Loket Pendaftaran</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'blue-primary': '#4F46E5',
+                        'blue-light': '#EEF2FF',
+                        'gray-light': '#F8FAFC'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .sidebar-nav {
+            width: 240px;
+        }
+        .main-content {
+            margin-left: 240px;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            left: 0;
+            top: 100%;
+            background-color: white;
+            min-width: 180px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 999;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            margin-top: 4px;
+        }
+        .dropdown-content.show {
+            display: block;
+        }
+        .dropdown-item {
+            color: black;
+            padding: 8px 12px;
+            text-decoration: none;
+            display: block;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .dropdown-item:hover {
+            background-color: #f1f5f9;
+        }
+        
+        /* Form validation styles */
+        .form-error {
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+        }
+        
+        .error-message {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Sidebar dari komponen -->
+    <div id="sidebar-container"></div>
+    <script>
+      fetch('../../src/components/sidebar.html')
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById('sidebar-container').innerHTML = html;
+        });
+    </script>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b">
+            <div class="flex items-center justify-between px-6 py-4">
+                <div class="flex items-center space-x-4">
+                    <nav class="flex items-center space-x-2 text-sm text-gray-600">
+                        <span>Home</span>
+                        <span>></span>
+                        <span class="text-gray-900 font-medium">Loket Pendaftaran</span>
+                    </nav>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-gray-700">Admin</span>
+                    <button class="text-gray-500"></button>
+                </div>
+            </div>
+        </header>
+
+        <div class="p-6">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex flex-col lg:flex-row gap-6 mb-6">
+                    <!-- Filter Data Section -->
+                    <div class="flex-1 bg-blue-light p-6 rounded-lg border border-blue-200 h-full">
+                        <h2 class="text-lg font-bold text-blue-600 mb-6">FILTER DATA</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <!-- Tanggal Registrasi -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">TANGGAL REGISTRASI</label>
+                                <div class="flex items-center gap-3">
+                                    <div class="relative flex-1">
+                                        <input type="date" 
+                                               id="dateFrom"
+                                               value="2025-07-16" 
+                                               class="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    </div>
+                                    <span class="text-sm text-gray-600 font-medium">s.d.</span>
+                                    <div class="relative flex-1">
+                                        <input type="date" 
+                                               id="dateTo"
+                                               value="2025-07-16" 
+                                               class="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Cara Bayar -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">CARA BAYAR</label>
+                                <div class="relative">
+                                    <select id="filterPayment" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white">
+                                        <option value="">Semua</option>
+                                        <option value="BPJS">BPJS</option>
+                                        <option value="Umum">Umum</option>
+                                        <option value="Asuransi">Asuransi</option>
+                                    </select>
+                                    <i class="fas fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                                </div>
+                            </div>
+
+                            <!-- Poliklinik -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">POLIKLINIK</label>
+                                <div class="relative">
+                                    <select id="filterClinic" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white">
+                                        <option value="">Semua</option>
+                                        <option value="Poli Bedah Ortopedi">Poli Bedah Ortopedi</option>
+                                        <option value="Poli Gigi">Poli Gigi</option>
+                                        <option value="Poli Umum">Poli Umum</option>
+                                        <option value="Poli Jantung">Poli Jantung</option>
+                                        <option value="Poli Anak">Poli Anak</option>
+                                        <option value="Poli Mata">Poli Mata</option>
+                                    </select>
+                                    <i class="fas fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                                </div>
+                            </div>
+
+                            <!-- Dokter -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">DOKTER</label>
+                                <div class="relative">
+                                    <select id="filterDoctor" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white">
+                                        <option value="">Semua</option>
+                                        <option value="dr. Budi Sp.OT">dr. Budi Sp.OT</option>
+                                        <option value="drg. Andi Prasetyo, Sp.KG">drg. Andi Prasetyo, Sp.KG</option>
+                                        <option value="dr. Sarah">dr. Sarah</option>
+                                        <option value="dr. Sari Sp.JP">dr. Sari Sp.JP</option>
+                                        <option value="dr. Ahmad Sp.A">dr. Ahmad Sp.A</option>
+                                    </select>
+                                    <i class="fas fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Search Bar dan Buttons -->
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <div class="flex-1">
+                                <input type="text" 
+                                       id="searchInput"
+                                       placeholder="Ketik NRM, Nama Pasien atau NIK" 
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500">
+                            </div>
+                            <div class="flex gap-3">
+                                <button onclick="applyFilter()" class="px-6 py-2 bg-green-100 text-green-600 border border-green-300 rounded-md hover:bg-green-200 transition-colors duration-200 flex items-center gap-2 font-medium">
+                                    <i class="fas fa-search"></i>
+                                    <span>Cari</span>
+                                </button>
+                                <button onclick="resetFilter()" class="px-6 py-2 bg-red-100 text-red-600 border border-red-300 rounded-md hover:bg-red-200 transition-colors duration-200 flex items-center gap-2 font-medium">
+                                    <i class="fas fa-redo"></i>
+                                    <span>Reset</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Antrian Loket Section -->
+                    <div class="lg:w-80 mx-auto">
+                      <div class="bg-blue-light border-blue-200 p-6 rounded-lg shadow-sm border h-full flex flex-col justify-center items-center">
+                      <!-- Info Sisa Antrian -->
+                      <div class="text-center mb-6">
+                        <p class="text-sm text-gray-600 font-medium">Sisa Antrian Loket <span id="currentLoketDisplay">1</span> : <span id="remainingQueueDisplay">13</span></p>
+                      </div>
+
+                      <!-- Nomor Antrian Besar -->
+                      <div class="text-center mb-8">
+                        <div class="text-9xl font-bold text-blue-600 tracking-wider transition-all duration-300" id="currentQueueDisplay">001</div>
+                      </div>
+
+                        <!-- Control Buttons -->
+                        <div class="flex justify-center gap-4">
+                          <button onclick="resetQueueFunction()" class="w-16 h-16 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center shadow-md" 
+                              title="Reset Antrian" 
+                              id="resetBtn">
+                            <i class="fas fa-redo text-xl"></i>
+                          </button>
+                          <button onclick="repeatCallFunction()" class="w-16 h-16 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 flex items-center justify-center shadow-md" 
+                              title="Panggil Antrian" 
+                              id="soundBtn">
+                            <i class="fas fa-volume-up text-xl"></i>
+                          </button>
+                          <button onclick="callNextQueueFunction()" class="w-16 h-16 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors duration-200 flex items-center justify-center shadow-md" 
+                              title="Antrian Selanjutnya" 
+                              id="nextBtn">
+                            <i class="fas fa-forward text-xl"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+
+                <!-- Table Header -->
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-blue-600 uppercase">DATA PASIEN RAWAT JALAN</h3>
+                    <a href="../../pasien/tambah.html" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium">Tambah Pasien +</a>
+                </div>
+
+                <!-- Data Table -->
+                <div class="bg-white rounded-lg shadow-sm border">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr class="text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                    <th class="px-4 py-3 text-center">NO</th>
+                                    <th class="px-4 py-3 text-center">AKSI</th>
+                                    <th class="px-4 py-3">TANGGAL</th>
+                                    <th class="px-4 py-3">NRM</th>
+                                    <th class="px-4 py-3">NAMA PASIEN</th>
+                                    <th class="px-4 py-3">NIK</th>
+                                    <th class="px-4 py-3">J.K.</th>
+                                    <th class="px-4 py-3">POLIKLINIK</th>
+                                    <th class="px-4 py-3">DOKTER PJ</th>
+                                    <th class="px-4 py-3">CARA BAYAR</th>
+                                    <th class="px-4 py-3">TINDAK LANJUT</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="patientTable">
+                                <!-- Data akan diisi melalui JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="px-4 py-3 border-t bg-gray-50 flex items-center justify-end">
+                        <div class="flex space-x-1">
+                            <button class="px-3 py-2 text-sm text-gray-500 hover:text-gray-700 border rounded">‹</button>
+                            <button class="px-3 py-2 text-sm bg-blue-500 text-white rounded">1</button>
+                            <button class="px-3 py-2 text-sm text-gray-700 hover:text-gray-900 border rounded">2</button>
+                            <button class="px-3 py-2 text-sm text-gray-700 hover:text-gray-900 border rounded">3</button>
+                            <button class="px-3 py-2 text-sm text-gray-500 hover:text-gray-700">...</button>
+                            <button class="px-3 py-2 text-sm text-gray-700 hover:text-gray-900 border rounded">10</button>
+                            <button class="px-3 py-2 text-sm text-gray-500 hover:text-gray-700 border rounded">›</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Kunjungan -->
+    <div id="addModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg w-full max-w-md animate-fade-in">
+            <div class="bg-blue-500 text-white px-6 py-4 rounded-t-lg">
+                <h3 class="text-lg font-semibold text-center uppercase">KUNJUNGAN RAWAT JALAN BARU</h3>
+            </div>
+            
+            <div class="p-6">
+                <form id="visitForm">
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-800 mb-4 uppercase">KUNJUNGAN KE-4</h4>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1 uppercase">TANGGAL KUNJUNGAN</label>
+                            <input type="date" value="2025-07-16" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1 uppercase">POLIKLINIK <span class="text-red-500">*</span></label>
+                            <select id="poliklinikSelect" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Pilih poliklinik di sini</option>
+                                <option value="Poli Bedah Ortopedi">Poli Bedah Ortopedi</option>
+                                <option value="Poli Gigi">Poli Gigi</option>
+                                <option value="Poli Umum">Poli Umum</option>
+                            </select>
+                            <div class="error-message" id="poliklinikError">Harap pilih poliklinik!</div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1 uppercase">DOKTER <span class="text-red-500">*</span></label>
+                            <select id="dokterSelect" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Pilih dokter di sini</option>
+                                <option value="dr. Budi Sp.OT">dr. Budi Sp.OT</option>
+                                <option value="drg. Andi Prasetyo, Sp.KG">drg. Andi Prasetyo, Sp.KG</option>
+                                <option value="dr. Sarah">dr. Sarah</option>
+                            </select>
+                            <div class="error-message" id="dokterError">Harap pilih dokter!</div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1 uppercase">CARA BAYAR <span class="text-red-500">*</span></label>
+                            <select id="caraBayarSelect" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Pilih cara bayar</option>
+                                <option value="BPJS">BPJS</option>
+                                <option value="Umum">Umum</option>
+                            </select>
+                            <div class="error-message" id="caraBayarError">Harap pilih cara bayar!</div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1 uppercase">KETERANGAN</label>
+                            <textarea placeholder="Opsional" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-3 mt-6">
+                        <button type="button" onclick="hideAddModal()" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">Batal</button>
+                        <button type="button" onclick="saveVisit()" class="flex-1 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors">Simpan Kunjungan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Success -->
+    <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-8 w-full max-w-sm animate-fade-in text-center">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Sukses</h3>
+            <p class="text-gray-600 mb-6">Berhasil menambahkan kunjungan</p>
+            
+            <div class="flex space-x-3">
+                <button onclick="hideSuccessModal()" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">Tutup</button>
+                <button onclick="showPrintModal()" class="flex-1 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors">Print Struk</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Print -->
+    <div id="printModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden" onclick="hidePrintModal()">
+        <div class="bg-white rounded-lg w-full max-w-sm animate-fade-in" onclick="event.stopPropagation()">
+            <div class="p-6">
+                <div class="text-center border-b border-dashed border-gray-300 pb-4 mb-4">
+                    <h3 class="text-lg font-bold text-gray-800">RSUD SLAWI</h3>
+                    <h4 class="text-sm font-semibold text-gray-600">STRUK RAWAT JALAN</h4>
+                </div>
+                
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span>No. Registrasi</span>
+                        <span id="printRegNo">: DG-20250717-01</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Tanggal Kunjungan</span>
+                        <span id="printDate">: 17 Juli 2025</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>NRM</span>
+                        <span id="printNrm">: 987654</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Nama Pasien</span>
+                        <span id="printName">: Nabila Banati</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Poli Tujuan</span>
+                        <span id="printPoli">: -</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Dokter Tujuan</span>
+                        <span id="printDokter">: -</span>
+                    </div>
+                </div>
+                
+                <div class="border-t border-dashed border-gray-300 pt-4 mt-4 text-center text-xs text-gray-600">
+                    Harap membawa struk ini ke poli tujuan<br>
+                    Terima kasih atas kunjungan Anda
+                </div>
+                
+                <div class="text-center mt-4 text-xs text-gray-500">
+                    Klik di mana saja untuk menutup
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Queue Management System
+        class QueueSystem {
+            constructor() {
+                this.currentQueue = parseInt(localStorage.getItem('currentQueue')) || 1;
+                this.totalQueue = parseInt(localStorage.getItem('totalQueue')) || 50; // Total antrian hari ini
+                this.lokets = {
+                    1: { status: 'active', currentNumber: this.currentQueue, remaining: this.totalQueue - this.currentQueue + 1 },
+                    2: { status: 'active', currentNumber: 0, remaining: 0 },
+                    3: { status: 'active', currentNumber: 0, remaining: 0 },
+                    4: { status: 'active', currentNumber: 0, remaining: 0 },
+                    5: { status: 'active', currentNumber: 0, remaining: 0 }
+                };
+                this.currentLoket = 1;
+                this.isPaused = false;
+                this.init();
+            }
+
+            init() {
+                this.updateDisplay();
+                this.loadLoketData();
+                this.loadVoices();
+            }
+            
+            loadVoices() {
+                // Load speech synthesis voices
+                if ('speechSynthesis' in window) {
+                    // Load voices when available
+                    speechSynthesis.onvoiceschanged = () => {
+                        this.voices = speechSynthesis.getVoices();
+                    };
+                    
+                    // Try to load voices immediately
+                    this.voices = speechSynthesis.getVoices();
+                }
+            }
+
+            updateDisplay() {
+                // Only update elements that exist
+                const currentQueueNumber = document.getElementById('currentQueueNumber');
+                const currentLoket = document.getElementById('currentLoket');
+                const remainingQueue = document.getElementById('remainingQueue');
+                
+                if (currentQueueNumber) currentQueueNumber.textContent = String(this.currentQueue).padStart(3, '0');
+                if (currentLoket) currentLoket.textContent = this.currentLoket;
+                if (remainingQueue) remainingQueue.textContent = this.lokets[this.currentLoket].remaining;
+                
+                // Update new display elements
+                const currentQueueDisplay = document.getElementById('currentQueueDisplay');
+                const currentLoketDisplay = document.getElementById('currentLoketDisplay');
+                const remainingQueueDisplay = document.getElementById('remainingQueueDisplay');
+                
+                if (currentQueueDisplay) currentQueueDisplay.textContent = String(this.currentQueue).padStart(3, '0');
+                if (currentLoketDisplay) currentLoketDisplay.textContent = this.currentLoket;
+                if (remainingQueueDisplay) remainingQueueDisplay.textContent = this.lokets[this.currentLoket].remaining;
+                
+                // Update button states
+                this.updateButtonStates();
+            }
+
+            updateButtonStates() {
+                const resetBtn = document.getElementById('resetBtn');
+                const soundBtn = document.getElementById('soundBtn');
+                const nextBtn = document.getElementById('nextBtn');
+                
+                // Disable next button if no more queue
+                if (nextBtn) {
+                    if (this.lokets[this.currentLoket].remaining <= 0) {
+                        nextBtn.disabled = true;
+                        nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                        nextBtn.title = 'Tidak ada antrian lagi';
+                    } else {
+                        nextBtn.disabled = false;
+                        nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                        nextBtn.title = 'Antrian Selanjutnya';
+                    }
+                }
+                
+                // Sound button only enabled if there's a current queue
+                if (soundBtn) {
+                    if (this.currentQueue < 1) {
+                        soundBtn.disabled = true;
+                        soundBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                        soundBtn.title = 'Tidak ada antrian untuk dipanggil';
+                    } else {
+                        soundBtn.disabled = false;
+                        soundBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                        soundBtn.title = 'Panggil Antrian';
+                    }
+                }
+            }
+
+            loadLoketData() {
+                const savedLokets = localStorage.getItem('loketData');
+                if (savedLokets) {
+                    this.lokets = JSON.parse(savedLokets);
+                }
+                const savedTotal = localStorage.getItem('totalQueue');
+                if (savedTotal) {
+                    this.totalQueue = parseInt(savedTotal);
+                }
+            }
+
+            saveLoketData() {
+                // Save in multiple formats for compatibility
+                const loketDataNew = JSON.stringify(this.lokets);
+                const loketDataOld = JSON.stringify({
+                    loket1: this.lokets[1]?.currentNumber || 0,
+                    loket2: this.lokets[2]?.currentNumber || 0,
+                    loket3: this.lokets[3]?.currentNumber || 0,
+                    loket4: this.lokets[4]?.currentNumber || 0,
+                    loket5: this.lokets[5]?.currentNumber || 0,
+                });
+                
+                localStorage.setItem('loketData', loketDataNew);
+                localStorage.setItem('loketDataOld', loketDataOld); // Backward compatibility
+                localStorage.setItem('currentQueue', this.currentQueue.toString());
+                localStorage.setItem('currentNumber', this.currentQueue.toString()); // Alternative key
+                localStorage.setItem('totalQueue', this.totalQueue.toString());
+            }
+
+            callNextQueue() {
+                if (this.isPaused) {
+                    alert('Antrian sedang dijeda. Aktifkan kembali untuk melanjutkan.');
+                    return;
+                }
+
+                // Check if there's remaining queue
+                if (this.lokets[this.currentLoket].remaining <= 0) {
+                    alert('Tidak ada antrian lagi untuk hari ini.');
+                    return;
+                }
+
+                this.currentQueue++;
+                
+                // Don't exceed total queue
+                if (this.currentQueue > this.totalQueue) {
+                    this.currentQueue = this.totalQueue;
+                    alert('Antrian sudah mencapai batas maksimal hari ini.');
+                    return;
+                }
+
+                this.lokets[this.currentLoket].currentNumber = this.currentQueue;
+                this.lokets[this.currentLoket].remaining = Math.max(0, this.totalQueue - this.currentQueue + 1);
+                
+                this.updateDisplay();
+                this.saveLoketData();
+                this.announceQueue();
+                
+                // Update display on other pages
+                this.broadcastUpdate();
+            }
+
+            announceQueue() {
+                // Enhanced speech synthesis with better browser support
+                if ('speechSynthesis' in window) {
+                    // Stop any current speech
+                    window.speechSynthesis.cancel();
+                    
+                    const speech = new SpeechSynthesisUtterance(
+                        `Nomor antrian ${this.currentQueue}, silakan menuju loket ${this.currentLoket}`
+                    );
+                    
+                    // Set speech properties
+                    speech.lang = 'id-ID';
+                    speech.rate = 0.8;
+                    speech.pitch = 1;
+                    speech.volume = 1;
+                    
+                    // Find Indonesian voice if available
+                    const voices = this.voices || window.speechSynthesis.getVoices();
+                    const indonesianVoice = voices.find(voice => 
+                        voice.lang.includes('id') || 
+                        voice.name.toLowerCase().includes('indo') ||
+                        voice.lang.includes('ID')
+                    );
+                    
+                    if (indonesianVoice) {
+                        speech.voice = indonesianVoice;
+                    }
+                    
+                    // Error handling
+                    speech.onerror = function(event) {
+                        console.error('Speech synthesis error:', event.error);
+                    };
+                    
+                    speech.onend = function() {
+                        console.log('Speech synthesis completed');
+                    };
+                    
+                    // Speak with delay to ensure proper loading
+                    setTimeout(() => {
+                        window.speechSynthesis.speak(speech);
+                    }, 100);
+                } else {
+                    console.warn('Speech synthesis not supported in this browser');
+                    // Fallback: show visual notification
+                    this.showVisualNotification();
+                }
+            }
+            
+            showVisualNotification() {
+                // Create temporary visual notification if speech is not available
+                const notification = document.createElement('div');
+                notification.innerHTML = `
+                    <div class="fixed top-4 right-4 bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in">
+                        🔊 Antrian ${String(this.currentQueue).padStart(3, '0')} - Loket ${this.currentLoket}
+                    </div>
+                `;
+                document.body.appendChild(notification);
+                
+                // Remove notification after 3 seconds
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 3000);
+            }
+
+            repeatCall() {
+                if (this.currentQueue < 1) {
+                    alert('Belum ada antrian yang dipanggil.');
+                    return;
+                }
+                this.announceQueue();
+            }
+
+            resetQueue() {
+                const confirmed = confirm('Yakin ingin reset antrian? Semua data antrian akan dikembalikan ke awal.');
+                if (!confirmed) return;
+                
+                this.currentQueue = 1;
+                this.totalQueue = 50; // Reset total queue
+                this.lokets[this.currentLoket].currentNumber = this.currentQueue;
+                this.lokets[this.currentLoket].remaining = this.totalQueue - this.currentQueue + 1;
+                this.updateDisplay();
+                this.saveLoketData();
+                this.broadcastUpdate();
+                
+                alert('Antrian telah direset ke nomor 001.');
+            }
+
+            pauseQueue() {
+                this.isPaused = !this.isPaused;
+                const button = document.getElementById('pauseBtn');
+                if (this.isPaused) {
+                    button.textContent = '▶️';
+                    button.title = 'Lanjutkan Antrian';
+                    button.className = button.className.replace('bg-blue-600 hover:bg-blue-700', 'bg-red-600 hover:bg-red-700');
+                } else {
+                    button.textContent = '⏸';
+                    button.title = 'Jeda Antrian';
+                    button.className = button.className.replace('bg-red-600 hover:bg-red-700', 'bg-blue-600 hover:bg-blue-700');
+                }
+            }
+
+            broadcastUpdate() {
+                // Update display antrian page via localStorage event
+                const updateData = {
+                    currentNumber: this.currentQueue,
+                    loket: this.currentLoket,
+                    remaining: this.lokets[this.currentLoket].remaining,
+                    timestamp: Date.now(),
+                    loketData: this.lokets
+                };
+                
+                localStorage.setItem('queueUpdate', JSON.stringify(updateData));
+                localStorage.setItem('currentNumber', this.currentQueue.toString());
+                localStorage.setItem('loketData', JSON.stringify(this.lokets));
+                
+                // Trigger storage event manually for same page
+                window.dispatchEvent(new StorageEvent('storage', {
+                    key: 'queueUpdate',
+                    newValue: JSON.stringify(updateData)
+                }));
+            }
+        }
+
+        // Initialize queue system
+        const queueSystem = new QueueSystem();
+
+        // Sample data
+        const patientData = [
+            { id: 1, date: '16/07/2025', nrm: '000001', name: 'Muhammad Fadhlan', nik: 'THT251607001', gender: 'L', clinic: 'Poli Bedah Ortopedi', doctor: 'dr. Budi Sp.OT', payment: 'Umum', action: 'Pulang' },
+            { id: 2, date: '16/07/2025', nrm: '000002', name: 'Siti Nurhaliza', nik: 'GG251607002', gender: 'P', clinic: 'Poli Gigi', doctor: 'drg. Andi Prasetyo, Sp.KG', payment: 'BPJS', action: 'Pindah Poli' },
+            { id: 3, date: '16/07/2025', nrm: '000003', name: 'Ahmad Yusuf', nik: 'BDP251607003', gender: 'L', clinic: 'Poli Umum', doctor: 'dr. Sarah', payment: 'Umum', action: 'Rawat Inap' },
+            { id: 4, date: '16/07/2025', nrm: '000004', name: 'Rina Sari', nik: 'THT251607004', gender: 'P', clinic: 'Poli Bedah Ortopedi', doctor: 'dr. Budi Sp.OT', payment: 'BPJS', action: 'Pulang' },
+            { id: 5, date: '16/07/2025', nrm: '000005', name: 'Budi Santoso', nik: 'THT251607005', gender: 'L', clinic: 'Poli Gigi', doctor: 'drg. Andi Prasetyo, Sp.KG', payment: 'Umum', action: 'Pulang' },
+            { id: 6, date: '16/07/2025', nrm: '000006', name: 'Dewi Lestari', nik: 'THT251607006', gender: 'P', clinic: 'Poli Umum', doctor: 'dr. Sarah', payment: 'BPJS', action: 'Pindah Poli' },
+            { id: 7, date: '16/07/2025', nrm: '000007', name: 'Agus Wijaya', nik: 'THT251607007', gender: 'L', clinic: 'Poli Bedah Ortopedi', doctor: 'dr. Budi Sp.OT', payment: 'Umum', action: 'Pulang' },
+            { id: 8, date: '16/07/2025', nrm: '000008', name: 'Maya Indira', nik: 'THT251607008', gender: 'P', clinic: 'Poli Gigi', doctor: 'drg. Andi Prasetyo, Sp.KG', payment: 'BPJS', action: 'Rawat Inap' },
+            { id: 9, date: '16/07/2025', nrm: '000009', name: 'Roni Susanto', nik: 'THT251607009', gender: 'L', clinic: 'Poli Umum', doctor: 'dr. Sarah', payment: 'Umum', action: 'Pulang' },
+            { id: 10, date: '16/07/2025', nrm: '000010', name: 'Lisa Amelia', nik: 'THT251607010', gender: 'P', clinic: 'Poli Bedah Ortopedi', doctor: 'dr. Budi Sp.OT', payment: 'BPJS', action: 'Pindah Poli' }
+        ];
+
+        let currentFormData = {};
+        let filteredData = [...patientData];
+
+        // Enhanced filter functions with visual feedback
+        function applyFilter() {
+            const dateFrom = document.getElementById('dateFrom').value;
+            const dateTo = document.getElementById('dateTo').value;
+            const payment = document.getElementById('filterPayment').value;
+            const clinic = document.getElementById('filterClinic').value;
+            const doctor = document.getElementById('filterDoctor').value;
+            const search = document.getElementById('searchInput').value.toLowerCase();
+
+            filteredData = patientData.filter(patient => {
+                let matches = true;
+                
+                // Filter by date (if dates are provided)
+                if (dateFrom && dateTo) {
+                    const patientDate = new Date(patient.date.split('/').reverse().join('-'));
+                    const fromDate = new Date(dateFrom);
+                    const toDate = new Date(dateTo);
+                    if (patientDate < fromDate || patientDate > toDate) matches = false;
+                }
+                
+                // Filter by payment method
+                if (payment && patient.payment !== payment) matches = false;
+                
+                // Filter by clinic
+                if (clinic && patient.clinic !== clinic) matches = false;
+                
+                // Filter by doctor
+                if (doctor && patient.doctor !== doctor) matches = false;
+                
+                // Filter by search text
+                if (search && !(
+                    patient.nrm.toLowerCase().includes(search) ||
+                    patient.name.toLowerCase().includes(search) ||
+                    patient.nik.toLowerCase().includes(search)
+                )) matches = false;
+
+                return matches;
+            });
+
+            populateTable();
+            updatePagination();
+        }
+
+        function resetFilter() {
+            document.getElementById('dateFrom').value = '2025-07-16';
+            document.getElementById('dateTo').value = '2025-07-16';
+            document.getElementById('filterPayment').value = '';
+            document.getElementById('filterClinic').value = '';
+            document.getElementById('filterDoctor').value = '';
+            document.getElementById('searchInput').value = '';
+            
+            filteredData = [...patientData];
+            populateTable();
+            updatePagination();
+        }
+
+        function updatePagination() {
+            // Pagination function - keeping for future use if needed
+        }
+
+        // Dropdown functions
+        function toggleDropdown(id) {
+            const dropdown = document.getElementById(`dropdown-${id}`);
+            // Close all other dropdowns
+            document.querySelectorAll('.dropdown-content').forEach(d => {
+                if (d.id !== `dropdown-${id}`) {
+                    d.classList.remove('show');
+                }
+            });
+            dropdown.classList.toggle('show');
+        }
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', function(event) {
+            if (!event.target.matches('.dropdown-btn')) {
+                document.querySelectorAll('.dropdown-content').forEach(dropdown => {
+                    dropdown.classList.remove('show');
+                });
+            }
+        });
+
+        // Queue control functions
+        function callNextQueue() {
+            queueSystem.callNextQueue();
+        }
+
+        function repeatCall() {
+            queueSystem.repeatCall();
+        }
+
+        function resetQueue() {
+            queueSystem.resetQueue();
+        }
+
+        // New function names for the buttons
+        function callNextQueueFunction() {
+            queueSystem.callNextQueue();
+        }
+
+        function repeatCallFunction() {
+            queueSystem.repeatCall();
+        }
+
+        function resetQueueFunction() {
+            queueSystem.resetQueue();
+        }
+
+        function pauseQueue() {
+            queueSystem.pauseQueue();
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl + R untuk reset antrian
+            if (e.ctrlKey && e.key === 'r') {
+                e.preventDefault();
+                resetQueue();
+            }
+            // Space untuk panggil antrian
+            else if (e.code === 'Space' && !e.target.matches('input, textarea, select')) {
+                e.preventDefault();
+                repeatCall();
+            }
+            // Arrow Right untuk next antrian
+            else if (e.key === 'ArrowRight' && !e.target.matches('input, textarea, select')) {
+                e.preventDefault();
+                callNextQueue();
+            }
+        });
+
+        // Enhanced input handling with better UX
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-filter on input change
+            const filterInputs = ['filterPayment', 'filterClinic', 'filterDoctor', 'searchInput'];
+            filterInputs.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('input', applyFilter);
+                    element.addEventListener('change', applyFilter);
+                }
+            });
+
+            // Enhanced focus effects for date inputs
+            const dateInputs = document.querySelectorAll('input[type="date"]');
+            dateInputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.classList.add('ring-2', 'ring-blue-500');
+                });
+                input.addEventListener('blur', function() {
+                    this.classList.remove('ring-2', 'ring-blue-500');
+                });
+            });
+
+            // Enhanced focus effects for select inputs
+            const selectInputs = document.querySelectorAll('select');
+            selectInputs.forEach(select => {
+                select.addEventListener('focus', function() {
+                    this.classList.add('ring-2', 'ring-blue-500');
+                });
+                select.addEventListener('blur', function() {
+                    this.classList.remove('ring-2', 'ring-blue-500');
+                });
+            });
+
+            // Add enter key support for search
+            document.getElementById('searchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    applyFilter();
+                }
+            });
+        });
+
+        // Function to get action badge color
+        function getActionBadgeClass(action) {
+            switch(action) {
+                case 'Pulang':
+                    return 'bg-blue-100 text-blue-800';
+                case 'Pindah Poli':
+                    return 'bg-yellow-100 text-yellow-800';
+                case 'Rawat Inap':
+                    return 'bg-green-100 text-green-800';
+                default:
+                    return 'bg-gray-100 text-gray-800';
+            }
+        }
+
+        // Populate table
+        function populateTable() {
+            const tbody = document.getElementById('patientTable');
+            tbody.innerHTML = '';
+            
+            filteredData.forEach(patient => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                
+                row.innerHTML = `
+                    <td class="px-4 py-3 text-sm text-gray-900 text-center">${patient.id}</td>
+                    <td class="px-4 py-3 text-sm text-center">
+                        <div class="dropdown">
+                            <button onclick="toggleDropdown(${patient.id})" class="dropdown-btn px-3 py-1 bg-blue-100 text-blue-600 rounded text-xs hover:bg-blue-200 inline-flex items-center">
+                                <svg class="w-4 h-4 text-blue-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+</svg>
+                            </button>
+                            <div id="dropdown-${patient.id}" class="dropdown-content text-left">
+                              <a class="dropdown-item" onclick="showAddModal(${patient.id})">Tambah Kunjungan</a>
+                              <a class="dropdown-item" onclick="return false;">Lihat Detail</a>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3 text-sm text-gray-900">${patient.date}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">${patient.nrm}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">${patient.name}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">${patient.nik}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900 text-center">${patient.gender}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">${patient.clinic}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">${patient.doctor}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">${patient.payment}</td>
+                    <td class="px-4 py-3 text-sm">
+                        <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full ${getActionBadgeClass(patient.action)}">
+                            ${patient.action}
+                        </span>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        populateTable();
+
+        // Show add visit modal
+        function showAddModal(patientId = null) {
+            if (patientId) {
+                const patient = patientData.find(p => p.id === patientId);
+                if (patient) {
+                    // Pre-fill with patient data if needed
+                    console.log('Adding visit for patient:', patient.name);
+                }
+            }
+            document.getElementById('addModal').classList.remove('hidden');
+            currentFormData = { patientId };
+        } 
+
+        // Hide add visit modal
+        function hideAddModal() {
+            document.getElementById('addModal').classList.add('hidden');
+            // Reset form when closing
+            resetVisitForm();
+        }
+        
+        // Reset form function
+        function resetVisitForm() {
+            document.getElementById('poliklinikSelect').value = '';
+            document.getElementById('dokterSelect').value = '';
+            document.getElementById('caraBayarSelect').value = 'BPJS'; // Set default
+            document.querySelector('textarea').value = '';
+            clearFormErrors();
+        }
+
+        // Save visit
+        function saveVisit() {
+            const poliklinik = document.getElementById('poliklinikSelect').value;
+            const dokter = document.getElementById('dokterSelect').value;
+            const caraBayar = document.getElementById('caraBayarSelect').value;
+            
+            // Reset previous error states
+            clearFormErrors();
+            
+            let hasError = false;
+            
+            // Validasi form - semua field harus diisi
+            if (!poliklinik) {
+                showFieldError('poliklinikSelect', 'poliklinikError');
+                hasError = true;
+            }
+            
+            if (!dokter) {
+                showFieldError('dokterSelect', 'dokterError');
+                hasError = true;
+            }
+            
+            if (!caraBayar) {
+                showFieldError('caraBayarSelect', 'caraBayarError');
+                hasError = true;
+            }
+            
+            if (hasError) {
+                return; // Stop if there are validation errors
+            }
+            
+            currentFormData = {
+                ...currentFormData,
+                clinic: poliklinik,
+                doctor: dokter,
+                payment: caraBayar
+            };
+            
+            hideAddModal();
+            showSuccessModal();
+        }
+        
+        // Helper functions for form validation
+        function showFieldError(fieldId, errorId) {
+            const field = document.getElementById(fieldId);
+            const error = document.getElementById(errorId);
+            
+            field.classList.add('form-error');
+            error.style.display = 'block';
+            
+            // Remove error when user interacts with field
+            field.addEventListener('change', function() {
+                clearFieldError(fieldId, errorId);
+            }, { once: true });
+        }
+        
+        function clearFieldError(fieldId, errorId) {
+            const field = document.getElementById(fieldId);
+            const error = document.getElementById(errorId);
+            
+            field.classList.remove('form-error');
+            error.style.display = 'none';
+        }
+        
+        function clearFormErrors() {
+            const fields = ['poliklinikSelect', 'dokterSelect', 'caraBayarSelect'];
+            const errors = ['poliklinikError', 'dokterError', 'caraBayarError'];
+            
+            fields.forEach((fieldId, index) => {
+                clearFieldError(fieldId, errors[index]);
+            });
+        }
+
+        // Show success modal
+        function showSuccessModal() {
+            document.getElementById('successModal').classList.remove('hidden');
+        } 
+
+        // Hide success modal
+        function hideSuccessModal() {
+            document.getElementById('successModal').classList.add('hidden');
+        }
+
+        // Show print modal
+        function showPrintModal() {
+            document.getElementById('printPoli').textContent = `: ${currentFormData.clinic || '-'}`;
+            document.getElementById('printDokter').textContent = `: ${currentFormData.doctor || '-'}`;
+            document.getElementById('printModal').classList.remove('hidden');
+            hideSuccessModal();
+        }
+
+        // Hide print modal
+        function hidePrintModal() {
+            document.getElementById('printModal').classList.add('hidden');
+        }
+
+        // Print struk (removed - modal closes automatically)
+        function printStruk() {
+            console.log('Struk printed');
+            hidePrintModal();
+        }
+
+        // View detail
+        function viewDetail(id) {
+            const patient = patientData.find(p => p.id === id);
+            if (patient) {
+                alert(`Detail Pasien:\nNama: ${patient.name}\nNRM: ${patient.nrm}\nPoli: ${patient.clinic}\nDokter: ${patient.doctor}`);
+            }
+        }
+    </script>
+</body>
+</html>
